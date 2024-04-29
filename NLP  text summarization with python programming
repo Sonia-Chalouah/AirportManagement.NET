@@ -1,0 +1,344 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "provenance": [],
+      "authorship_tag": "ABX9TyNBb4r1Ksj62uHdhh2Ik6ks",
+      "include_colab_link": true
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    },
+    "language_info": {
+      "name": "python"
+    }
+  },
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/Sonia-Chalouah/AirportManagement.NET/blob/master/NLP%20%20text%20summarization%20with%20python%20programming\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": 14,
+      "metadata": {
+        "id": "g7n6UEXooPib"
+      },
+      "outputs": [],
+      "source": [
+        "from nltk.corpus import stopwords\n",
+        "from nltk.tokenize import word_tokenize, sent_tokenize"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "import nltk\n",
+        "nltk.download('stopwords')\n",
+        "nltk.download('punkt')"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "aPIy4Zogpjtn",
+        "outputId": "fce9a6ff-d219-47f6-9bad-195509ad406c"
+      },
+      "execution_count": 25,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stderr",
+          "text": [
+            "[nltk_data] Downloading package stopwords to /root/nltk_data...\n",
+            "[nltk_data]   Package stopwords is already up-to-date!\n",
+            "[nltk_data] Downloading package punkt to /root/nltk_data...\n",
+            "[nltk_data]   Package punkt is already up-to-date!\n"
+          ]
+        },
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "True"
+            ]
+          },
+          "metadata": {},
+          "execution_count": 25
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "#Enter your text whatever u want to summarize\n",
+        "text = \"\"\"In 2003, Rihanna formed a musical trio with two of her classmates in her home country of Barbados.[15] Without a name or any material, the girl group auditioned with American record producer Evan Rogers, who commented, \"The minute Rihanna walked into the room, it was like the other two girls didn't exist.\"[15] Rihanna went to Rogers's hotel room, where she performed renditions of Destiny's Child's \"Emotion\" and Mariah Carey's \"Hero\".[24] Impressed, Rogers scheduled a second meeting with Rihanna's mother present and then invited Rihanna to his hometown in the United States to record some demo tapes that could be sent to record labels.[24] Recordings were intermittent, taking about a year because she was only able to record during school holidays. \"Pon de Replay\" and \"The Last Time\" were two tracks recorded for the demo tape, which were eventually included on her debut album Music of the Sun.[25] That same year, Rihanna was signed to Rogers's and Carl Sturken's production company, Syndicated Rhythm Productions.[24]\n",
+        "\n",
+        "Rihanna's demo was shipped out to Def Jam Recordings, where Jay Brown, an A&R executive at the record label, was one of the first to hear the demo. Brown played the demo tape for rapper Jay-Z, who had recently been appointed as president and CEO of Def Jam.[26] When Jay-Z first heard the track \"Pon de Replay\", he felt the song was too big for her.[27] Despite being skeptical, he invited Rihanna to audition for the label. In early 2005, Rihanna auditioned for Def Jam in New York City, where Jay-Z introduced her to music mogul Antonio \"L.A.\" Reid.[24][28] At the audition, she sang Whitney Houston's cover of \"For the Love of You\", as well as the demo tracks \"Pon de Replay\" and \"The Last Time\".[24] Jay-Z was absolutely certain about signing her after she performed her future single \"Pon de Replay\".[27] His boss, L.A. Reid, was also impressed with her audition, telling Jay-Z not to let Rihanna leave the building until the contract was signed.[29] Reid left it to Jay-Z and his team to close the deal which resulted in a six-album record deal with Def Jam. She waited in Jay-Z's office until 3:00 in the morning to get lawyers to draft up a contract because he wanted to prevent her from signing with another label.[27] Rihanna canceled other meetings with record labels and relocated from Barbados to the United States to live with Rogers and his wife.[30]\"\"\""
+      ],
+      "metadata": {
+        "id": "LE-hHI9Wp-BI"
+      },
+      "execution_count": 26,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "stopWords = set (stopwords.words(\"english\"))\n",
+        "print(stopWords)"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "FqdAxqShqjH6",
+        "outputId": "25cbec7b-ef1a-49ae-9601-b7b510f2c114"
+      },
+      "execution_count": 27,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "{'during', 'shan', 't', 'a', 'didn', 'whom', \"wouldn't\", \"didn't\", 'hers', 'ourselves', 'once', 'having', 'under', 'haven', 'here', 'wasn', \"won't\", \"needn't\", \"should've\", 'only', 'both', 'own', 'my', 'any', 'down', 'after', 'so', 'more', 'too', 'isn', 'at', 'd', 'very', 'ours', 'are', 'of', \"wasn't\", 'their', 'doing', 'same', 'his', 'about', 'be', 'up', \"shan't\", 'did', 'can', 'until', \"weren't\", 'll', 'when', 'ain', 'y', 'i', 'if', 'we', 'shouldn', 'then', 'just', 'against', 'them', \"shouldn't\", 'from', 'not', 'into', 'had', \"doesn't\", 'again', 'been', 'aren', 'which', 'who', 'has', 'what', 'this', 'out', \"hasn't\", 'further', 'will', 'she', 'won', 'don', 'he', 'all', 'yourself', \"aren't\", \"couldn't\", 'through', \"mustn't\", 'have', 'while', 'himself', 'over', 'each', 'ma', \"don't\", 'being', 'our', 'hasn', 'weren', \"haven't\", 'me', 'its', 'hadn', 'because', 'herself', 'for', 'by', \"mightn't\", 'wouldn', \"you'll\", 'or', \"you're\", 'her', 'myself', 'to', 'it', \"you'd\", 'some', 'o', 'needn', 'they', 'm', 'how', 'you', 'yourselves', \"that'll\", 'nor', 'between', 'than', 've', 'before', 'most', 'and', 'the', 'few', 'itself', 're', 'doesn', 'your', 'in', \"she's\", 'off', 'where', 'should', 'mustn', 'am', 's', 'those', 'other', 'that', 'such', 'there', 'why', \"it's\", \"isn't\", 'with', 'an', 'themselves', \"you've\", 'is', 'above', 'no', 'as', \"hadn't\", 'him', 'does', 'mightn', 'do', 'was', 'now', 'were', 'but', 'couldn', 'theirs', 'these', 'on', 'below', 'yours'}\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "words = word_tokenize(text)\n",
+        "print(words)"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "c5gVzfvvsf4X",
+        "outputId": "93889175-4bcb-422a-adcf-4aacd366f0b1"
+      },
+      "execution_count": 28,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "['In', '2003', ',', 'Rihanna', 'formed', 'a', 'musical', 'trio', 'with', 'two', 'of', 'her', 'classmates', 'in', 'her', 'home', 'country', 'of', 'Barbados', '.', '[', '15', ']', 'Without', 'a', 'name', 'or', 'any', 'material', ',', 'the', 'girl', 'group', 'auditioned', 'with', 'American', 'record', 'producer', 'Evan', 'Rogers', ',', 'who', 'commented', ',', '``', 'The', 'minute', 'Rihanna', 'walked', 'into', 'the', 'room', ',', 'it', 'was', 'like', 'the', 'other', 'two', 'girls', 'did', \"n't\", 'exist', '.', '``', '[', '15', ']', 'Rihanna', 'went', 'to', 'Rogers', \"'s\", 'hotel', 'room', ',', 'where', 'she', 'performed', 'renditions', 'of', 'Destiny', \"'s\", 'Child', \"'s\", '``', 'Emotion', \"''\", 'and', 'Mariah', 'Carey', \"'s\", '``', 'Hero', \"''\", '.', '[', '24', ']', 'Impressed', ',', 'Rogers', 'scheduled', 'a', 'second', 'meeting', 'with', 'Rihanna', \"'s\", 'mother', 'present', 'and', 'then', 'invited', 'Rihanna', 'to', 'his', 'hometown', 'in', 'the', 'United', 'States', 'to', 'record', 'some', 'demo', 'tapes', 'that', 'could', 'be', 'sent', 'to', 'record', 'labels', '.', '[', '24', ']', 'Recordings', 'were', 'intermittent', ',', 'taking', 'about', 'a', 'year', 'because', 'she', 'was', 'only', 'able', 'to', 'record', 'during', 'school', 'holidays', '.', '``', 'Pon', 'de', 'Replay', \"''\", 'and', '``', 'The', 'Last', 'Time', \"''\", 'were', 'two', 'tracks', 'recorded', 'for', 'the', 'demo', 'tape', ',', 'which', 'were', 'eventually', 'included', 'on', 'her', 'debut', 'album', 'Music', 'of', 'the', 'Sun', '.', '[', '25', ']', 'That', 'same', 'year', ',', 'Rihanna', 'was', 'signed', 'to', 'Rogers', \"'s\", 'and', 'Carl', 'Sturken', \"'s\", 'production', 'company', ',', 'Syndicated', 'Rhythm', 'Productions', '.', '[', '24', ']', 'Rihanna', \"'s\", 'demo', 'was', 'shipped', 'out', 'to', 'Def', 'Jam', 'Recordings', ',', 'where', 'Jay', 'Brown', ',', 'an', 'A', '&', 'R', 'executive', 'at', 'the', 'record', 'label', ',', 'was', 'one', 'of', 'the', 'first', 'to', 'hear', 'the', 'demo', '.', 'Brown', 'played', 'the', 'demo', 'tape', 'for', 'rapper', 'Jay-Z', ',', 'who', 'had', 'recently', 'been', 'appointed', 'as', 'president', 'and', 'CEO', 'of', 'Def', 'Jam', '.', '[', '26', ']', 'When', 'Jay-Z', 'first', 'heard', 'the', 'track', '``', 'Pon', 'de', 'Replay', \"''\", ',', 'he', 'felt', 'the', 'song', 'was', 'too', 'big', 'for', 'her', '.', '[', '27', ']', 'Despite', 'being', 'skeptical', ',', 'he', 'invited', 'Rihanna', 'to', 'audition', 'for', 'the', 'label', '.', 'In', 'early', '2005', ',', 'Rihanna', 'auditioned', 'for', 'Def', 'Jam', 'in', 'New', 'York', 'City', ',', 'where', 'Jay-Z', 'introduced', 'her', 'to', 'music', 'mogul', 'Antonio', '``', 'L.A.', \"''\", 'Reid', '.', '[', '24', ']', '[', '28', ']', 'At', 'the', 'audition', ',', 'she', 'sang', 'Whitney', 'Houston', \"'s\", 'cover', 'of', '``', 'For', 'the', 'Love', 'of', 'You', \"''\", ',', 'as', 'well', 'as', 'the', 'demo', 'tracks', '``', 'Pon', 'de', 'Replay', \"''\", 'and', '``', 'The', 'Last', 'Time', \"''\", '.', '[', '24', ']', 'Jay-Z', 'was', 'absolutely', 'certain', 'about', 'signing', 'her', 'after', 'she', 'performed', 'her', 'future', 'single', '``', 'Pon', 'de', 'Replay', \"''\", '.', '[', '27', ']', 'His', 'boss', ',', 'L.A.', 'Reid', ',', 'was', 'also', 'impressed', 'with', 'her', 'audition', ',', 'telling', 'Jay-Z', 'not', 'to', 'let', 'Rihanna', 'leave', 'the', 'building', 'until', 'the', 'contract', 'was', 'signed', '.', '[', '29', ']', 'Reid', 'left', 'it', 'to', 'Jay-Z', 'and', 'his', 'team', 'to', 'close', 'the', 'deal', 'which', 'resulted', 'in', 'a', 'six-album', 'record', 'deal', 'with', 'Def', 'Jam', '.', 'She', 'waited', 'in', 'Jay-Z', \"'s\", 'office', 'until', '3:00', 'in', 'the', 'morning', 'to', 'get', 'lawyers', 'to', 'draft', 'up', 'a', 'contract', 'because', 'he', 'wanted', 'to', 'prevent', 'her', 'from', 'signing', 'with', 'another', 'label', '.', '[', '27', ']', 'Rihanna', 'canceled', 'other', 'meetings', 'with', 'record', 'labels', 'and', 'relocated', 'from', 'Barbados', 'to', 'the', 'United', 'States', 'to', 'live', 'with', 'Rogers', 'and', 'his', 'wife', '.', '[', '30', ']']\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "freqTable = dict"
+      ],
+      "metadata": {
+        "id": "cq5qVaDUs2km"
+      },
+      "execution_count": 29,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# creating a frequency table to keep the score of eacch word its basically how many times the word hes been hrepeated\n",
+        "freqTable = dict()\n",
+        "for  word in words:\n",
+        "  word = word.lower()\n",
+        "  if word in stopWords:\n",
+        "    continue\n",
+        "  if word in freqTable:\n",
+        "   freqTable[word] += 1\n",
+        "  else:\n",
+        "    freqTable[word] = 1\n",
+        "print(freqTable)\n",
+        "\n"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "eXaqr8AAq3cf",
+        "outputId": "353821ff-a1a7-4e4b-d990-c706ae09ed1f"
+      },
+      "execution_count": 30,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "{'2003': 1, ',': 24, 'rihanna': 11, 'formed': 1, 'musical': 1, 'trio': 1, 'two': 3, 'classmates': 1, 'home': 1, 'country': 1, 'barbados': 2, '.': 18, '[': 15, '15': 2, ']': 15, 'without': 1, 'name': 1, 'material': 1, 'girl': 1, 'group': 1, 'auditioned': 2, 'american': 1, 'record': 7, 'producer': 1, 'evan': 1, 'rogers': 5, 'commented': 1, '``': 12, 'minute': 1, 'walked': 1, 'room': 2, 'like': 1, 'girls': 1, \"n't\": 1, 'exist': 1, 'went': 1, \"'s\": 10, 'hotel': 1, 'performed': 2, 'renditions': 1, 'destiny': 1, 'child': 1, 'emotion': 1, \"''\": 10, 'mariah': 1, 'carey': 1, 'hero': 1, '24': 5, 'impressed': 2, 'scheduled': 1, 'second': 1, 'meeting': 1, 'mother': 1, 'present': 1, 'invited': 2, 'hometown': 1, 'united': 2, 'states': 2, 'demo': 6, 'tapes': 1, 'could': 1, 'sent': 1, 'labels': 2, 'recordings': 2, 'intermittent': 1, 'taking': 1, 'year': 2, 'able': 1, 'school': 1, 'holidays': 1, 'pon': 4, 'de': 4, 'replay': 4, 'last': 2, 'time': 2, 'tracks': 2, 'recorded': 1, 'tape': 2, 'eventually': 1, 'included': 1, 'debut': 1, 'album': 1, 'music': 2, 'sun': 1, '25': 1, 'signed': 2, 'carl': 1, 'sturken': 1, 'production': 1, 'company': 1, 'syndicated': 1, 'rhythm': 1, 'productions': 1, 'shipped': 1, 'def': 4, 'jam': 4, 'jay': 1, 'brown': 2, '&': 1, 'r': 1, 'executive': 1, 'label': 3, 'one': 1, 'first': 2, 'hear': 1, 'played': 1, 'rapper': 1, 'jay-z': 7, 'recently': 1, 'appointed': 1, 'president': 1, 'ceo': 1, '26': 1, 'heard': 1, 'track': 1, 'felt': 1, 'song': 1, 'big': 1, '27': 3, 'despite': 1, 'skeptical': 1, 'audition': 3, 'early': 1, '2005': 1, 'new': 1, 'york': 1, 'city': 1, 'introduced': 1, 'mogul': 1, 'antonio': 1, 'l.a.': 2, 'reid': 3, '28': 1, 'sang': 1, 'whitney': 1, 'houston': 1, 'cover': 1, 'love': 1, 'well': 1, 'absolutely': 1, 'certain': 1, 'signing': 2, 'future': 1, 'single': 1, 'boss': 1, 'also': 1, 'telling': 1, 'let': 1, 'leave': 1, 'building': 1, 'contract': 2, '29': 1, 'left': 1, 'team': 1, 'close': 1, 'deal': 2, 'resulted': 1, 'six-album': 1, 'waited': 1, 'office': 1, '3:00': 1, 'morning': 1, 'get': 1, 'lawyers': 1, 'draft': 1, 'wanted': 1, 'prevent': 1, 'another': 1, 'canceled': 1, 'meetings': 1, 'relocated': 1, 'live': 1, 'wife': 1, '30': 1}\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# Creating a dictionary to keep the score of each sentence here basically we check heavy the sentence is based on frequency of repeated words\n",
+        "sentences = sent_tokenize(text)\n",
+        "print(sentences)"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "y2cy0kfLui9j",
+        "outputId": "2a45f753-8b50-4966-acdc-7b13acc84a4f"
+      },
+      "execution_count": 31,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "['In 2003, Rihanna formed a musical trio with two of her classmates in her home country of Barbados.', '[15] Without a name or any material, the girl group auditioned with American record producer Evan Rogers, who commented, \"The minute Rihanna walked into the room, it was like the other two girls didn\\'t exist.', '\"[15] Rihanna went to Rogers\\'s hotel room, where she performed renditions of Destiny\\'s Child\\'s \"Emotion\" and Mariah Carey\\'s \"Hero\".', \"[24] Impressed, Rogers scheduled a second meeting with Rihanna's mother present and then invited Rihanna to his hometown in the United States to record some demo tapes that could be sent to record labels.\", '[24] Recordings were intermittent, taking about a year because she was only able to record during school holidays.', '\"Pon de Replay\" and \"The Last Time\" were two tracks recorded for the demo tape, which were eventually included on her debut album Music of the Sun.', \"[25] That same year, Rihanna was signed to Rogers's and Carl Sturken's production company, Syndicated Rhythm Productions.\", \"[24]\\n\\nRihanna's demo was shipped out to Def Jam Recordings, where Jay Brown, an A&R executive at the record label, was one of the first to hear the demo.\", 'Brown played the demo tape for rapper Jay-Z, who had recently been appointed as president and CEO of Def Jam.', '[26] When Jay-Z first heard the track \"Pon de Replay\", he felt the song was too big for her.', '[27] Despite being skeptical, he invited Rihanna to audition for the label.', 'In early 2005, Rihanna auditioned for Def Jam in New York City, where Jay-Z introduced her to music mogul Antonio \"L.A.\" Reid.', '[24][28] At the audition, she sang Whitney Houston\\'s cover of \"For the Love of You\", as well as the demo tracks \"Pon de Replay\" and \"The Last Time\".', '[24] Jay-Z was absolutely certain about signing her after she performed her future single \"Pon de Replay\".', '[27] His boss, L.A. Reid, was also impressed with her audition, telling Jay-Z not to let Rihanna leave the building until the contract was signed.', '[29] Reid left it to Jay-Z and his team to close the deal which resulted in a six-album record deal with Def Jam.', \"She waited in Jay-Z's office until 3:00 in the morning to get lawyers to draft up a contract because he wanted to prevent her from signing with another label.\", '[27] Rihanna canceled other meetings with record labels and relocated from Barbados to the United States to live with Rogers and his wife.', '[30]']\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "sentences[0]"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 35
+        },
+        "id": "KrPcm-n0vIGO",
+        "outputId": "55e47736-0de6-4855-d009-057155f31864"
+      },
+      "execution_count": 32,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "'In 2003, Rihanna formed a musical trio with two of her classmates in her home country of Barbados.'"
+            ],
+            "application/vnd.google.colaboratory.intrinsic+json": {
+              "type": "string"
+            }
+          },
+          "metadata": {},
+          "execution_count": 32
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "def getsentenceValue():\n",
+        "  sentenceValue = dict()\n",
+        "  for sentence in sentences:\n",
+        "    for word, freq in freqTable.items():\n",
+        "      if word in sentence.lower():\n",
+        "        if sentence in sentenceValue:\n",
+        "           sentenceValue[sentence] += freq\n",
+        "        else:\n",
+        "          sentenceValue[sentence] = freq\n",
+        "  return sentenceValue\n",
+        "  print(sentenceValue)\n",
+        "\n",
+        "sentenceValue = getsentenceValue()\n",
+        "print(sentenceValue)\n",
+        "\n",
+        "\n"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "utgM-_4tvYAW",
+        "outputId": "865c6714-ce33-4893-b95c-05b7b78a11df"
+      },
+      "execution_count": 33,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "{'In 2003, Rihanna formed a musical trio with two of her classmates in her home country of Barbados.': 68, '[15] Without a name or any material, the girl group auditioned with American record producer Evan Rogers, who commented, \"The minute Rihanna walked into the room, it was like the other two girls didn\\'t exist.': 124, '\"[15] Rihanna went to Rogers\\'s hotel room, where she performed renditions of Destiny\\'s Child\\'s \"Emotion\" and Mariah Carey\\'s \"Hero\".': 119, \"[24] Impressed, Rogers scheduled a second meeting with Rihanna's mother present and then invited Rihanna to his hometown in the United States to record some demo tapes that could be sent to record labels.\": 146, '[24] Recordings were intermittent, taking about a year because she was only able to record during school holidays.': 94, '\"Pon de Replay\" and \"The Last Time\" were two tracks recorded for the demo tape, which were eventually included on her debut album Music of the Sun.': 88, \"[25] That same year, Rihanna was signed to Rogers's and Carl Sturken's production company, Syndicated Rhythm Productions.\": 111, \"[24]\\n\\nRihanna's demo was shipped out to Def Jam Recordings, where Jay Brown, an A&R executive at the record label, was one of the first to hear the demo.\": 139, 'Brown played the demo tape for rapper Jay-Z, who had recently been appointed as president and CEO of Def Jam.': 79, '[26] When Jay-Z first heard the track \"Pon de Replay\", he felt the song was too big for her.': 102, '[27] Despite being skeptical, he invited Rihanna to audition for the label.': 101, 'In early 2005, Rihanna auditioned for Def Jam in New York City, where Jay-Z introduced her to music mogul Antonio \"L.A.\" Reid.': 95, '[24][28] At the audition, she sang Whitney Houston\\'s cover of \"For the Love of You\", as well as the demo tracks \"Pon de Replay\" and \"The Last Time\".': 123, '[24] Jay-Z was absolutely certain about signing her after she performed her future single \"Pon de Replay\".': 83, '[27] His boss, L.A. Reid, was also impressed with her audition, telling Jay-Z not to let Rihanna leave the building until the contract was signed.': 115, '[29] Reid left it to Jay-Z and his team to close the deal which resulted in a six-album record deal with Def Jam.': 88, \"She waited in Jay-Z's office until 3:00 in the morning to get lawyers to draft up a contract because he wanted to prevent her from signing with another label.\": 54, '[27] Rihanna canceled other meetings with record labels and relocated from Barbados to the United States to live with Rogers and his wife.': 92, '[30]': 31}\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "def getsumValues():\n",
+        "    sumValues = 0\n",
+        "    for sentence in sentenceValue:\n",
+        "        sumValues += sentenceValue[sentence]\n",
+        "\n",
+        "    # Average value of sentence from the Input text\n",
+        "    average = int(sumValues / len(sentenceValue))\n",
+        "\n",
+        "    return average\n",
+        "\n",
+        "average = getsumValues()\n",
+        "print(average)\n"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "kXvjBbEFxmPF",
+        "outputId": "90ba5f11-6bee-479f-f022-90d7d33cbb15"
+      },
+      "execution_count": 34,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "97\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "#Sorting sentences into our summary based on the sentence score where score is somewhat greater then the average score\n",
+        "summary = ''\n",
+        "for sentence in sentences:\n",
+        "  if (sentence in sentenceValue) and (sentenceValue[sentence]) > (1.2 * average):\n",
+        "    summary += \" \" +sentence\n",
+        "print(summary)"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "BjU9k2b5ydzh",
+        "outputId": "006ad829-5657-4012-fc7f-651be95f1982"
+      },
+      "execution_count": 35,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            " [15] Without a name or any material, the girl group auditioned with American record producer Evan Rogers, who commented, \"The minute Rihanna walked into the room, it was like the other two girls didn't exist. \"[15] Rihanna went to Rogers's hotel room, where she performed renditions of Destiny's Child's \"Emotion\" and Mariah Carey's \"Hero\". [24] Impressed, Rogers scheduled a second meeting with Rihanna's mother present and then invited Rihanna to his hometown in the United States to record some demo tapes that could be sent to record labels. [24]\n",
+            "\n",
+            "Rihanna's demo was shipped out to Def Jam Recordings, where Jay Brown, an A&R executive at the record label, was one of the first to hear the demo. [24][28] At the audition, she sang Whitney Houston's cover of \"For the Love of You\", as well as the demo tracks \"Pon de Replay\" and \"The Last Time\".\n"
+          ]
+        }
+      ]
+    }
+  ]
+}
